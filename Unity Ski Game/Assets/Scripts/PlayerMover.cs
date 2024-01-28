@@ -1,55 +1,93 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMover : MonoBehaviour
 {
-    public Transform groundCheck;
-    public float maxSpeed = 10f;
+    public float maxSpeed = 25f;
     private Rigidbody rbVelocity;
     private Transform player;
-
+    private Animator playerAnimator;
+    private SkiGameInputActions skiGameInputActions;
    
+
+
+    public float currentSpeed;
 
     private void Awake()
     {
+        skiGameInputActions = new SkiGameInputActions();
         rbVelocity = GetComponent<Rigidbody>();
         player = GetComponent<Transform>();
+        playerAnimator = GetComponent<Animator>();
+
+        // Subscribe to new input asset SkiGameInputActions Boost action
+        skiGameInputActions.GamePlay.LeftTurn.performed += ctx => TurnLeft(ctx.ReadValue<float>());
+        skiGameInputActions.GamePlay.RightTurn.performed += ctx => TurnRight(ctx.ReadValue<float>());
     }
 
-     void Start()
+
+    private void OnEnable()
     {
-        
+        skiGameInputActions.Enable();
     }
+
+
+    private void OnDisable()
+    {
+        skiGameInputActions.Disable();
+    }
+
+    
     private void FixedUpdate()
     {
         VelocityPerRotation();
+        SkierAnimation();
     }
 
     void Update()
     {
         TurnPlayer();
+
+        PlayerSpeed();
     }
- 
+
+
     private void TurnPlayer()
     {
        if (Physics.Raycast(player.position, Vector3.down, 0.1f))
         {
             float yRotation = NormalizeAngle(player.eulerAngles.y);
+            float turnLeftValue = skiGameInputActions.GamePlay.LeftTurn.ReadValue<float>();
+            float turnRightValue = skiGameInputActions.GamePlay.RightTurn.ReadValue<float>();
 
-            if (Input.GetKey("left") && yRotation < 270)
+            if (turnLeftValue > 0.5f && yRotation < 270)
             {
                 player.Rotate(0, 1, 0);
             }
-            else if (Input.GetKey("right") && yRotation > 90)
+            else if (turnRightValue > 0.5f && yRotation > 90)
             {
                 player.Rotate(0, -1, 0);
             }
         }
-        else
-        {
-            float yRotation = 180f;
-        }
+    }
+
+
+    private void TurnLeft(float value)
+    {
+        // You can add additional logic if needed
+    }
+
+    private void TurnRight(float value)
+    {
+        // You can add additional logic if needed
+    }
+
+
+    public void PlayerSpeed()
+    {
+        currentSpeed = rbVelocity.velocity.magnitude;
     }
 
 
@@ -75,6 +113,8 @@ public class PlayerMover : MonoBehaviour
         rbVelocity.velocity = downHillVelocity; 
     }
 
+
+   
     private float NormalizeAngle(float angle)
     {
         angle = angle % 360;
@@ -84,4 +124,22 @@ public class PlayerMover : MonoBehaviour
         }
         return angle;
     }
+
+
+    private void SkierAnimation()
+    {
+        float speedPercent = rbVelocity.velocity.magnitude / maxSpeed;
+        float transitionThreshold = 0.25f;
+        float buffer = 0.20f;  // Adjust this buffer as needed
+
+        // Trigger the transition slightly before reaching the threshold
+        if (speedPercent < (transitionThreshold - buffer))
+        {
+            playerAnimator.SetFloat("SpeedPercent", 0f); // Force transition to SkiSlow
+        }
+        else
+        {
+            playerAnimator.SetFloat("SpeedPercent", speedPercent);
+        }
+    }  
 }
