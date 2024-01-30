@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
         if (playerMover != null)
         {
             speedText.text = ("Speed: " + playerMover.currentSpeed.ToString("0"));
+            scoreText.text = ("Score: " + ScoreManager.score.ToString("0"));
         }
         else
         {

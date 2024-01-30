@@ -40,12 +40,26 @@ public class SnowmanMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        List<SnowmanData> snowmenToRemove = new List<SnowmanData>();
         // Create Lerp to move snowmen from side to side
         foreach (SnowmanData snowmanData in snowmanDataList)
         {
-            float newXPosition = Mathf.Lerp(snowmanData.originalXPosition, snowmanData.targetXPosition, Mathf.PingPong(Time.time * snowmanData.speed, 1));
-            snowmanData.snowmanObject.transform.position = new Vector3(newXPosition, snowmanData.snowmanObject.transform.position.y, snowmanData.snowmanObject.transform.position.z);
+            if (snowmanData.snowmanObject == null)
+            {
+                snowmenToRemove.Add(snowmanData);
+            }
+            else
+            {
+                float newXPosition = Mathf.Lerp(snowmanData.originalXPosition, snowmanData.targetXPosition, Mathf.PingPong(Time.time * snowmanData.speed, 1));
+                snowmanData.snowmanObject.transform.position = new Vector3(newXPosition, snowmanData.snowmanObject.transform.position.y, snowmanData.snowmanObject.transform.position.z);
+            }
         }
-    }
-            
+
+        // Remove snowmen from List when they are destroyed
+        foreach (SnowmanData snowmanData in snowmenToRemove)
+        {
+            snowmanDataList.Remove(snowmanData);
+        }
+        
+    }          
 }

@@ -7,6 +7,8 @@ public class CamView : MonoBehaviour
 {
     public Camera xrCam;
     public CinemachineVirtualCamera followCam;
+    public Transform xrCamTransform;
+    public Transform playerHeadTransform;
     private SkiGameInputActions skiGameInputActions;
 
     private void Awake()
@@ -25,6 +27,12 @@ public class CamView : MonoBehaviour
     private void OnDisable()
     {
         skiGameInputActions.Disable();
+    }
+
+
+    void Update()
+    {
+        xrCamTransform.position = playerHeadTransform.position;
     }
 
 

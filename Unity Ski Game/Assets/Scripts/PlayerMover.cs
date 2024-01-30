@@ -5,15 +5,14 @@ using UnityEngine.UI;
 
 public class PlayerMover : MonoBehaviour
 {
-    public float maxSpeed = 25f;
-    private Rigidbody rbVelocity;
     private Transform player;
     private Animator playerAnimator;
+    private PlayerBoost playerBoost;
     private SkiGameInputActions skiGameInputActions;
-   
-
-
+    private Rigidbody rbVelocity;
+    public float maxSpeed = 25f;
     public float currentSpeed;
+
 
     private void Awake()
     {
@@ -21,6 +20,7 @@ public class PlayerMover : MonoBehaviour
         rbVelocity = GetComponent<Rigidbody>();
         player = GetComponent<Transform>();
         playerAnimator = GetComponent<Animator>();
+        playerBoost = GetComponent<PlayerBoost>();
 
         // Subscribe to new input asset SkiGameInputActions Boost action
         skiGameInputActions.GamePlay.LeftTurn.performed += ctx => TurnLeft(ctx.ReadValue<float>());
@@ -46,10 +46,10 @@ public class PlayerMover : MonoBehaviour
         SkierAnimation();
     }
 
+
     void Update()
     {
         TurnPlayer();
-
         PlayerSpeed();
     }
 
@@ -64,11 +64,11 @@ public class PlayerMover : MonoBehaviour
 
             if (turnLeftValue > 0.5f && yRotation < 270)
             {
-                player.Rotate(0, 1, 0);
+                player.Rotate(0, -30 * Time.deltaTime, 0);
             }
             else if (turnRightValue > 0.5f && yRotation > 90)
             {
-                player.Rotate(0, -1, 0);
+                player.Rotate(0, 30 * Time.deltaTime, 0);
             }
         }
     }
@@ -78,6 +78,7 @@ public class PlayerMover : MonoBehaviour
     {
         // You can add additional logic if needed
     }
+
 
     private void TurnRight(float value)
     {
@@ -109,12 +110,17 @@ public class PlayerMover : MonoBehaviour
         }
 
         Vector3 downHillVelocity = transform.forward * maxSpeed * velocityFactor;
+
+        if (playerBoost.IsBoostActive())
+        {
+            downHillVelocity += playerBoost.GetBoostVelocity();
+        }
+
         downHillVelocity.y = rbVelocity.velocity.y;
         rbVelocity.velocity = downHillVelocity; 
     }
 
 
-   
     private float NormalizeAngle(float angle)
     {
         angle = angle % 360;
@@ -124,7 +130,7 @@ public class PlayerMover : MonoBehaviour
         }
         return angle;
     }
-
+    
 
     private void SkierAnimation()
     {
