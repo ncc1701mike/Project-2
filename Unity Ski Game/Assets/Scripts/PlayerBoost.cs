@@ -71,7 +71,6 @@ public class PlayerBoost : MonoBehaviour
                 time += Time.deltaTime;
                 yield return null;
         }
-
         StartCoroutine(SlowDown(initialVelocity, boostDuration));
     }
 
@@ -83,11 +82,11 @@ public class PlayerBoost : MonoBehaviour
         while (time < duration)
         {
             rbVelocity.velocity = Vector3.Lerp(currentVelocity, initialVelocity, time / duration);
+            //Vector3.Lerp(initialVelocity, Vector3.zero, 1 - Mathf.Exp(-time / duration));
             time += Time.deltaTime;
             yield return null;
         }
-
-        rbVelocity.velocity = initialVelocity;
+        rbVelocity.velocity = initialVelocity; //Vector3.zero; 
     }
 
     private void InitializeBoostButtonTextColor()

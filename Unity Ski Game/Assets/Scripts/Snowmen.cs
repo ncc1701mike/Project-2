@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class Snowmen : GameObstacle
 {
-    protected override void OnTriggerEnter(Collider other)
+    protected override void OnObstacleHit(GameObject player)
     {
-        base.OnTriggerEnter(other);
         // Score points
         ScoreManager.score += 10;
         
-        // Destroys the snowman
-        Destroy(gameObject); 
+        // Call the base class method
+        base.OnObstacleHit(player);
         
-        // Additional logic for explosion effect
-         //Instantiate(explosion, transform.position, transform.rotation);
+        // Destroy the snowman
+        Destroy(gameObject);
     }
-
-    
 }

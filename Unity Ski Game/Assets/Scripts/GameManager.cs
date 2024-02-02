@@ -7,6 +7,7 @@ using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
+
      [Tooltip("Score UI.")]
     public GameObject scoreUI;
 
@@ -32,6 +33,23 @@ public class GameManager : MonoBehaviour
         crashUI.SetActive(false);
     }
 
+
+    private void OnEnable()
+    {
+        GameObstacle.OnPlayerCollide += HandlePlayerRebound;
+    }
+
+    private void OnDisable()
+    {
+        GameObstacle.OnPlayerCollide -= HandlePlayerRebound;
+    }
+
+    private void HandlePlayerRebound(GameObject player)
+    {
+        PlayerMover playerMover = player.GetComponent<PlayerMover>();
+        StartCoroutine(playerMover.PlayerRebound());
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -47,4 +65,5 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
 }

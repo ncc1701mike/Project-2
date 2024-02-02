@@ -12,7 +12,7 @@ public class PlayerMover : MonoBehaviour
     private Rigidbody rbVelocity;
     public float maxSpeed = 25f;
     public float currentSpeed;
-
+    public bool canMove { get; set; } = true;
 
     private void Awake()
     {
@@ -42,8 +42,11 @@ public class PlayerMover : MonoBehaviour
     
     private void FixedUpdate()
     {
-        VelocityPerRotation();
-        SkierAnimation();
+        if (canMove)
+        {
+            VelocityPerRotation();
+            SkierAnimation();
+        }
     }
 
 
@@ -121,6 +124,23 @@ public class PlayerMover : MonoBehaviour
     }
 
 
+    public IEnumerator PlayerRebound()
+    {
+        Rigidbody playerRB = GetComponent<Rigidbody>();
+        
+        canMove = false;
+
+        Vector3 originalVelocity = playerRB.velocity;
+        playerRB.velocity = Vector3.zero;
+        playerRB.AddForce(-transform.forward * 10f, ForceMode.Impulse);
+        
+        yield return new WaitForSeconds(1.5f);
+         
+        playerRB.velocity = originalVelocity;
+        canMove = true;
+    }
+
+
     private float NormalizeAngle(float angle)
     {
         angle = angle % 360;
@@ -130,7 +150,7 @@ public class PlayerMover : MonoBehaviour
         }
         return angle;
     }
-    
+
 
     private void SkierAnimation()
     {
