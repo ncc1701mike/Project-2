@@ -5,14 +5,15 @@ using UnityEngine.UI;
 
 public class PlayerMover : MonoBehaviour
 {
+    public float maxSpeed = 25f;
+    public float currentSpeed;
+    public bool canMove { get; set; } = true;
     private Transform player;
     private Animator playerAnimator;
     private PlayerBoost playerBoost;
     private SkiGameInputActions skiGameInputActions;
     private Rigidbody rbVelocity;
-    public float maxSpeed = 25f;
-    public float currentSpeed;
-    public bool canMove { get; set; } = true;
+    private Quaternion initialRotation;
 
     private void Awake()
     {
@@ -25,6 +26,12 @@ public class PlayerMover : MonoBehaviour
         // Subscribe to new input asset SkiGameInputActions Boost action
         skiGameInputActions.GamePlay.LeftTurn.performed += ctx => TurnLeft(ctx.ReadValue<float>());
         skiGameInputActions.GamePlay.RightTurn.performed += ctx => TurnRight(ctx.ReadValue<float>());
+    }
+
+    void Start()
+    {
+        SoundManager.instance.PlaySkiing();
+        initialRotation = player.rotation;
     }
 
 
@@ -57,6 +64,12 @@ public class PlayerMover : MonoBehaviour
     }
 
 
+    public void ResetPlayerState()
+    {
+        player.rotation = initialRotation;
+    }
+
+
     private void TurnPlayer()
     {
        if (Physics.Raycast(player.position, Vector3.down, 0.1f))
@@ -73,6 +86,10 @@ public class PlayerMover : MonoBehaviour
             {
                 player.Rotate(0, 30 * Time.deltaTime, 0);
             }
+        }
+        else
+        {
+            SoundManager.instance.PlayJumpWhoosh();
         }
     }
 
@@ -121,6 +138,7 @@ public class PlayerMover : MonoBehaviour
 
         downHillVelocity.y = rbVelocity.velocity.y;
         rbVelocity.velocity = downHillVelocity; 
+        SoundManager.instance.PlaySkiing();
     }
 
 
@@ -133,6 +151,7 @@ public class PlayerMover : MonoBehaviour
         Vector3 originalVelocity = playerRB.velocity;
         playerRB.velocity = Vector3.zero;
         playerRB.AddForce(-transform.forward * 10f, ForceMode.Impulse);
+        SoundManager.instance.PlayRebound();
         
         yield return new WaitForSeconds(1.5f);
          

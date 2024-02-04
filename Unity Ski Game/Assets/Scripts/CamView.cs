@@ -32,7 +32,10 @@ public class CamView : MonoBehaviour
 
     void Update()
     {
+        if (xrCamTransform != null && playerHeadTransform != null)
+        {
         xrCamTransform.position = playerHeadTransform.position;
+        }
     }
 
 

@@ -26,22 +26,51 @@ public class GameManager : MonoBehaviour
     [Tooltip("Speed text.")]
     public Text speedText;
     public PlayerMover playerMover;
+    public static GameManager instance;
     
 
     private void Awake() 
     {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         crashUI.SetActive(false);
+
+        AssignPlayerMover();
     }
 
 
     private void OnEnable()
     {
-        GameObstacle.OnPlayerCollide += HandlePlayerRebound;
+       GameObstacle.OnPlayerCollide += HandlePlayerRebound;
+       SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable()
     {
         GameObstacle.OnPlayerCollide -= HandlePlayerRebound;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        AssignPlayerMover();
+    }
+
+    private void AssignPlayerMover()
+    {
+        playerMover = FindFirstObjectByType<PlayerMover>();
+        if (playerMover == null)
+        {
+            Debug.LogError("PlayerMover is not assigned after scene load.");
+        }
     }
 
     private void HandlePlayerRebound(GameObject player)

@@ -8,6 +8,9 @@ public class Snowmen : GameObstacle
     {
         // Score points
         ScoreManager.score += 10;
+
+        // Score Chime
+        SoundManager.instance.PlayScoreChimes();
         
         // Call the base class method
         base.OnObstacleHit(player);

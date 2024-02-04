@@ -7,8 +7,10 @@ public class Trees : GameObstacle
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
+
+        SoundManager.instance.PlayTreeRockHit();
+
         // Deduct points for collision with tree
-        
         // Condition to make sure player score does not go below 0
         if (ScoreManager.score > 0)
         {

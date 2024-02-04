@@ -393,6 +393,7 @@
 "Assets/Scripts/Flags.cs"
 "Assets/Scripts/GameManager.cs"
 "Assets/Scripts/GameObstacle.cs"
+"Assets/Scripts/Jumps.cs"
 "Assets/Scripts/MoveMover.cs"
 "Assets/Scripts/PlayerBoost.cs"
 "Assets/Scripts/PlayerMover.cs"
@@ -403,6 +404,7 @@
 "Assets/Scripts/SnowmanMover.cs"
 "Assets/Scripts/SnowmanThrow.cs"
 "Assets/Scripts/Snowmen.cs"
+"Assets/Scripts/SoundManager.cs"
 "Assets/Scripts/Trees.cs"
 -langversion:9.0
 
