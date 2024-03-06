@@ -10,6 +10,9 @@ TagManager:
   - Flag
   - LastFlag
   - Snowman
+  - StartingFlag
+  - BlueFlag
+  - PinkFlag
   layers:
   - Default
   - TransparentFX

@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("Player Crash UI.")]
     public GameObject crashUI;
 
+    [Tooltip ("Race Timer UI.")]
+    public GameObject raceTimerUI;
+
     [Tooltip("Crash text.")]
     public Text crashText;
     
@@ -25,7 +28,12 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("Speed text.")]
     public Text speedText;
-    public PlayerMover playerMover;
+
+    [Tooltip("RaceTimer text.")]
+    public Text raceTimerText;
+
+    public PlayerController playerController;
+    public Flags flags;
     public static GameManager instance;
     
 
@@ -42,8 +50,14 @@ public class GameManager : MonoBehaviour
         }
 
         crashUI.SetActive(false);
+        raceTimerUI.SetActive(false);
 
-        AssignPlayerMover();
+        AssignPlayerController();
+    }
+
+    private void Start()
+    {
+        flags = FindFirstObjectByType<Flags>();  
     }
 
 
@@ -61,38 +75,51 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        AssignPlayerMover();
+        AssignPlayerController();
     }
 
-    private void AssignPlayerMover()
+    private void AssignPlayerController()
     {
-        playerMover = FindFirstObjectByType<PlayerMover>();
-        if (playerMover == null)
+        playerController = FindFirstObjectByType<PlayerController>();
+        if (playerController == null)
         {
-            Debug.LogError("PlayerMover is not assigned after scene load.");
+            Debug.LogError("PlayerController is not assigned after scene load.");
         }
     }
 
     private void HandlePlayerRebound(GameObject player)
     {
-        PlayerMover playerMover = player.GetComponent<PlayerMover>();
-        StartCoroutine(playerMover.PlayerRebound());
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        StartCoroutine(playerController.PlayerRebound());
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // displays the player's current score and health onto text
-        if (playerMover != null)
+       if (flags != null)
+       {
+            float raceTime = flags.GetTimeSinceRaceStart();
+            raceTimerText.text = ("RaceTimer: " + raceTime.ToString("F2") + " seconds");
+       } 
+        
+       
+       
+        if (playerController != null)
         {
-            speedText.text = ("Speed: " + playerMover.currentSpeed.ToString("0"));
+            speedText.text = ("Speed: " + playerController.playerStats.speed.ToString("0"));
             scoreText.text = ("Score: " + ScoreManager.score.ToString("0"));
         }
+
         else
         {
-            Debug.LogError("PlayerMover is not assigned");
+            Debug.LogError("PlayerController is not assigned");
         }
 
+    }
+
+
+    public void ShowRaceTimer()
+    {
+        raceTimerUI.SetActive(true);
     }
 
 }

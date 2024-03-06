@@ -21,8 +21,7 @@ public class GameObstacle : MonoBehaviour
 
     protected virtual void OnObstacleHit(GameObject player)
     {
-        // Play impact sound effect
-        //audioSource.PlayOneShot(impactSound);
+        
     }
 
 }

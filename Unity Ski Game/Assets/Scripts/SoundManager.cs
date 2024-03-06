@@ -5,11 +5,9 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     public AudioClip scoreChimes, treeRockHit, trickWhoosh, rebound, flagHit, skiing, jumpWhoosh,crash;
-    private AudioSource audioSource;
-
-    // Start is called before the first frame update
-    
     public static SoundManager instance;
+    public AudioSource skiAudioSource; 
+    private AudioSource audioSource; 
 
     private void Awake()
     {
@@ -28,17 +26,18 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        //skiAudioSource = GetComponent<AudioSource>();
     }
 
     public void PlayScoreChimes()
     {
-        audioSource.volume = 2f;
+        audioSource.volume = 4.5f;
         audioSource.PlayOneShot(scoreChimes);
     }
 
     public void PlayTreeRockHit()
     {
-        audioSource.volume = 2.5f;
+        audioSource.volume = 15f;
         audioSource.PlayOneShot(treeRockHit);
     }
 
@@ -49,8 +48,11 @@ public class SoundManager : MonoBehaviour
 
     public void PlayRebound()
     {
-        audioSource.volume = 0.1f;
-        audioSource.PlayOneShot(rebound);
+        if (audioSource.volume > 0.25f)
+        {
+            audioSource.volume = 0.15f;
+            audioSource.PlayOneShot(rebound);
+        }
     }
 
     public void PlayTrickWhoosh()
@@ -58,16 +60,33 @@ public class SoundManager : MonoBehaviour
         audioSource.PlayOneShot(trickWhoosh);
     }
 
-    public void PlaySkiing(float delayInSeconds = 0.75f)
+
+    public bool IsSkiingPlaying()
     {
-        // loop the audioclip
-        if(!audioSource.isPlaying || audioSource.clip != skiing)
+        return skiAudioSource.isPlaying && skiAudioSource.clip == skiing;
+    }
+
+
+    public void PlaySkiing()
+    {
+        if (!skiAudioSource.isPlaying || skiAudioSource.clip != skiing)
         {
-            audioSource.volume = 0.75f;
-            audioSource.clip = skiing;
-            audioSource.loop = true;
-            audioSource.PlayDelayed(delayInSeconds);
+            skiAudioSource.volume = 0.3f;
+            skiAudioSource.clip = skiing;
+            skiAudioSource.loop = true;
+            skiAudioSource.Play();
         }
+    }
+
+    public void StopSkiing()
+    {
+        skiAudioSource.loop = false;
+        skiAudioSource.Stop();
+    }
+
+    public bool IsJumpWhooshPlaying()
+    {
+        return audioSource.isPlaying && audioSource.clip == jumpWhoosh;
     }
 
     public void PlayJumpWhoosh()

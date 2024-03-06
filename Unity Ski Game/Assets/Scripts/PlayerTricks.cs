@@ -9,7 +9,7 @@ public class PlayerTricks : MonoBehaviour
     private Rigidbody rbVelocity;
     private bool isFlipping = false;
     private bool isSpinning = false;
-    private bool tricksEnabled = false;
+    //private bool tricksEnabled;
     private bool justSpun = false;
     private bool justFlipped = false;
     private float flipStartTime;
@@ -36,7 +36,7 @@ public class PlayerTricks : MonoBehaviour
 
     public void EnableTricks(Vector3 position, Quaternion rotation)
     {
-        tricksEnabled = true;
+        //tricksEnabled = true;
         storedPosition = position;
         storedRotation = rotation;
     }
@@ -44,7 +44,7 @@ public class PlayerTricks : MonoBehaviour
 
     public void DisableTricks()
     {
-        tricksEnabled = false;
+       // tricksEnabled = false;
     }
 
     private void OnEnable()
@@ -95,7 +95,14 @@ public class PlayerTricks : MonoBehaviour
 
             if (Mathf.Abs(player.eulerAngles.x) > 10)
             {
+                SoundManager.instance.PlayCrash();
                 StartCoroutine(Crash());
+            }
+
+            else if (Mathf.Abs(player.eulerAngles.x) < 10 || Mathf.Abs(player.eulerAngles.x) > 350)
+            {
+                SoundManager.instance.PlayScoreChimes();
+                ScoreManager.score += 10;
             }
         }
     }
@@ -131,6 +138,13 @@ public void SkiSpin()
             if (Mathf.Abs(player.eulerAngles.y) < 170 || Mathf.Abs(player.eulerAngles.y) > 190)
             {
                 StartCoroutine(Crash());
+                SoundManager.instance.PlayCrash();
+            }
+
+            else
+            {
+                SoundManager.instance.PlayScoreChimes();
+                ScoreManager.score += 10;
             }
         }
     }
@@ -148,8 +162,7 @@ public void SkiSpin()
 
     private IEnumerator Crash()
     {
-        SoundManager.instance.PlayCrash();
-        PlayerMover playerMover = player.GetComponent<PlayerMover>();
+        PlayerController playerController = player.GetComponent<PlayerController>();
         
         yield return new WaitForSeconds(0.35f);
         gameManager.crashUI.SetActive(true);
@@ -180,7 +193,7 @@ public void SkiSpin()
         
         player.position = resetPositon;
         player.rotation = storedRotation;
-        playerMover.ResetPlayerState();
+        playerController.ResetPlayerState();
         
         gameManager.crashUI.SetActive(false);
 

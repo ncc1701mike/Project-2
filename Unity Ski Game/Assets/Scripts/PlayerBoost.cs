@@ -8,7 +8,7 @@ public class PlayerBoost : MonoBehaviour
     private Rigidbody rbVelocity;
     private SkiGameInputActions skiGameInputActions;
     private bool isBoosting = false;
-    private float boostAmount = 10f;
+    private float boostAmount = 100f;
     public GameObject boostButton;
     private Color originalColor;
     
@@ -59,7 +59,7 @@ public class PlayerBoost : MonoBehaviour
 
     private IEnumerator Boost()
     {
-        float boostDuration = 1f;
+        float boostDuration = 0.5f;
         float time = 0f;
 
         Vector3 initialVelocity = rbVelocity.velocity;
