@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerEvents : MonoBehaviour
 {
-    /*public delegate void playerHitAction();
+    public delegate void playerHitAction();
     public static event playerHitAction OnPlayerHit;
     
     public static void PlayerHit()
@@ -13,5 +13,5 @@ public class PlayerEvents : MonoBehaviour
         {
             OnPlayerHit();
         }
-    }*/
+    }
 }

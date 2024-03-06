@@ -20,14 +20,14 @@ public class PlayerDamage : MonoBehaviour
     //Register that TakeDamage will be called when an OnPlayerHit Event happens
     private void OnEnable()
     {
-        //PlayerEvents.OnPlayerHit += TakeDamage;
+        PlayerEvents.OnPlayerHit += TakeDamage;
     }
 
     //Un Register TakeDamade will be called when an OnPlayerHit Event happens
 
     private void OnDisable()
     {
-        //PlayerEvents.OnPlayerHit -= TakeDamage;
+        PlayerEvents.OnPlayerHit -= TakeDamage;
     }
 
 
